@@ -25,7 +25,7 @@ function [Psi, Lambda, Qhat, St, Nb] = spod(Q,W,dt,nfft,olap)
 
 %========================================================
 % Authors : Leandra I. Abreu, Diego C. P. Blanco 
-% Last version : 20/08/2021
+% Last version : 08/04/2022
 % Referencias : 
 % Abreu, 2017
 % Cordier e Bergmann, 2003 (POD) 
@@ -52,9 +52,7 @@ Ww = repmat(w,[N 1]);
 for i = 1:Nb
     pos1 = calcPos1(olap,nfft,i);   
     pos2 = pos1+nfft-1;
-    % ifft is used because of the -omega*t convention
-    % We do not divide by nfft because of matlab's ifft normalisation (see documentation)
-    Qfft = ECF*ifft(Q(:,pos1:pos2).*Ww,[],2);
+    Qfft = ECF*fft(Q(:,pos1:pos2).*Ww,[],2)/nfft;
     Qhat(:,:,i) = Qfft.';
 end
 
@@ -97,11 +95,6 @@ end
 function pos1 = calcPos1(olap,nfft,i)
     pc = olap/100;
     pos1 = (i-1)*floor(nfft*(1-pc))+1;
-end
-
-function y = hanning(n)
-    x = linspace(0,1,n);
-    y = 0.5-0.5*cos(2*pi*x);
 end
 
 function y = inf_smooth(n)

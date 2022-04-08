@@ -8,6 +8,8 @@ input_file = "GL_solution.mat";
 %SPOD
 Nfft = 100;
 Olap = 75;
+U = 10;
+xp = 15;
 
 %Plot
 mode2plot = 1;
@@ -21,10 +23,9 @@ Q = data.q;
 W = weightVector(x); % SPOD weights
 dt = t(2)-t(1);
 
-disp(' ');
-disp(['Calculating SPOD with window = ', num2str(Nfft), ' and overlap = ', num2str(Olap), '%'])
-[Psi, Lambda, Qhat, St, Nb] = spod(Q,W,dt,Nfft,Olap);
-outfile = sprintf('SPOD_nb%d_w%d_o%d.mat',Nb,Nfft,Olap);
+disp(['Calculating Shifted SPOD with window = ', num2str(Nfft), ' and overlap = ', num2str(Olap), '%'])
+[Psi, Lambda, Qhat, St, Nb] = shifted_spod(Q,W,x,xp,U,dt,Nfft,Olap);
+outfile = sprintf('ShiftedSPOD_nb%d_w%d_o%d.mat',Nb,Nfft,Olap);
 save(outfile,'Psi','Lambda','Qhat','St','x','t','Nb','Nfft','Olap','-v7.3');
 
 %% PLot mode

@@ -12,7 +12,7 @@ function [Psi, Lambda, Qhat, St, Nb] = shifted_spod(Q,W,x,xp,u,dt,nfft,olap)
 % Q [N x Nt] :            Data matrix, without mean.
 % W [N x 1] or [1 x N] :  Integration weights.
 % u [1 x 1] or size(W):   Shifting velocity array.
-% x [N x 1] or [1 x N] :  Vector of positions in x of each point.
+% x size(W) :             Vector of positions in x of each point.
 % xp [1 x 1] :            X coordinate of reference point. 
 % dt [1 x 1] :            Time step.
 % nfft [1 x 1]:           Block size for Welch method.
@@ -27,13 +27,8 @@ function [Psi, Lambda, Qhat, St, Nb] = shifted_spod(Q,W,x,xp,u,dt,nfft,olap)
 % St [1 x NSt] :          Non-dimensional frequency
 
 %========================================================
-% Authors : Leandra I. Abreu, Diego C. P. Blanco 
-% Last version : 20/08/2021
-% Referencias : 
-% Abreu, 2017
-% Cordier e Bergmann, 2003 (POD) 
-% Towne 2018, (POD, SPOD)
-% Schimdt 2020
+% Authors : Diego C. P. Blanco 
+% Last version : 08/04/2022
 %========================================================
 
 % Temporal shift
@@ -50,7 +45,7 @@ for i = 1:size(Q,1)
     end
 end
 
-% Columns where the temporal series overlaps after the shift are removed.
+% Columns where the beginning/end of the temporal series overlap after the shift are removed.
 Nend = abs(ceil(min(Shift)));
 Nbegin = abs(floor(max(Shift)));
 Q = Q(:,Nbegin+1:end-Nend);
@@ -74,9 +69,7 @@ Ww = repmat(w,[N 1]);
 for i = 1:Nb
     pos1 = calcPos1(olap,nfft,i);   
     pos2 = pos1+nfft-1;
-    % ifft is used because of the -omega*t convention
-    % We do not divide by nfft because of matlab's ifft normalisation (see documentation)
-    Qfft = ECF*ifft(Q(:,pos1:pos2).*Ww,[],2);
+    Qfft = ECF*fft(Q(:,pos1:pos2).*Ww,[],2)/nfft;
     Qhat(:,:,i) = Qfft.';
 end
 
@@ -124,11 +117,6 @@ end
 function pos1 = calcPos1(olap,nfft,i)
     pc = olap/100;
     pos1 = (i-1)*floor(nfft*(1-pc))+1;
-end
-
-function y = hanning(n)
-    x = linspace(0,1,n);
-    y = 0.5-0.5*cos(2*pi*x);
 end
 
 function y = inf_smooth(n)
