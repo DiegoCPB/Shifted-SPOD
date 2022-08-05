@@ -88,7 +88,7 @@ for j=1:NSt
     
     % Direct POD
     if Nm == N
-        C = Qhat_aux*Qhat_aux'*(W/Nb); 
+        C = Qhat_aux*Qhat_aux'*W/Nb; 
         [Psi_aux,lambda] = eig(C);
         [lambda,ind_sort] = sort(diag(lambda),'descend');
         Psi_aux = Psi_aux(:,ind_sort);  
@@ -96,7 +96,7 @@ for j=1:NSt
         
     % Snapshot POD
     elseif Nm == Nb
-        C = Qhat_aux'*(W/Nb)*Qhat_aux;
+        C = Qhat_aux'*W*Qhat_aux/Nb;
         [Theta_aux,lambda] = eig(C);
         [lambda,ind_sort] = sort(diag(lambda),'descend');
         Theta_aux = Theta_aux(:,ind_sort); 
