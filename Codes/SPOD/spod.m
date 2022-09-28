@@ -52,7 +52,8 @@ Ww = repmat(w,[N 1]);
 for i = 1:Nb
     pos1 = calcPos1(olap,nfft,i);   
     pos2 = pos1+nfft-1;
-    Qfft = ECF*fft(Q(:,pos1:pos2).*Ww,[],2)/nfft;
+    % -1i*omega*t convention
+    Qfft = ECF*ifft(Q(:,pos1:pos2).*Ww,[],2);
     Qhat(:,:,i) = Qfft.';
 end
 

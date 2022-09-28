@@ -4,14 +4,13 @@ function [U,S,V,x] = GL_solveResolvent(LinearMatrixPath,omega)
     x = LINEAR.x;
 
     II = eye(size(L));
-    A = 1i*omega*II - L;
 
     % Weights
     W = weightVector(x);
     W = diag(W);
 
     % Resolvent operator
-    R = inv(A);
+    R = -inv(1i*omega*II - L);
 
     % optimal forcing according to Rayleigh quotient:
     % max <Rf,Rf>/<f,f>
@@ -20,13 +19,13 @@ function [U,S,V,x] = GL_solveResolvent(LinearMatrixPath,omega)
 
     Wchol = sqrtm(W);
 
-    [U,S,V]=svd(Wchol*R*inv(Wchol));
+    [U,S,V]=svd(Wchol*R/Wchol);
 
     %see Lesshafft, Semeraro, Jaunet, Cavalieri & Jordan (arXiv 2018):
     %Wchol*R*inv(Wchol) =U Sigma V';
     %R =inv(Wchol)*U Sigma V'*Wchol;
     %optimal forcing/response given by inv(Wchol)*V and inv(Wchol)*U
 
-    V = inv(Wchol)*V;
-    U = inv(Wchol)*U;
+    V = Wchol\V;
+    U = Wchol\U;
 end

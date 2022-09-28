@@ -3,7 +3,6 @@ function plot_resolvent_modes(LinearMatrix_path,index_mode,omega)
 [U,~,~,x] = GL_solveResolvent(LinearMatrix_path,omega);
 
 U = U(:,index_mode);
-U = U*exp(-1i*angle(U(2)));
 
 % Padding
 x = [0;x;30];

@@ -1,12 +1,12 @@
-function plot_SPOD_Modes(SPOD_path,index_mode,index_omega)
+function plot_SPOD_Modes(SPOD_path,index_mode,omega)
     data = matfile(SPOD_path);
     x = data.x;
+    St = data.St;
+    [~,index_omega] = min(abs(2*pi*St-omega));
+
     mode = data.Psi(index_omega,:,index_mode)';
-    omega = data.St;
+    omega = St;
     omega = 2*pi*omega(index_omega);
-    
-    %adjust phase
-    mode = mode/exp(1i*angle(mode(2)));
     
     % Padding
     x = [0;x;30];

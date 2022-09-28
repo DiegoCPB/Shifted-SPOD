@@ -23,11 +23,12 @@ Q = data.q;
 W = weightVector(x); % SPOD weights
 dt = t(2)-t(1);
 
-disp(['Calculating Shifted SPOD with window = ', num2str(Nfft), ' and overlap = ', num2str(Olap), '%'])
-[Psi, Lambda, Qhat, St, Nb] = shifted_spod(Q,W,x,xp,U,dt,Nfft,Olap);
-outfile = sprintf('ShiftedSPOD_nb%d_w%d_o%d.mat',Nb,Nfft,Olap);
-save(outfile,'Psi','Lambda','Qhat','St','x','t','Nb','Nfft','Olap','-v7.3');
+outfile = sprintf('ShiftedSPOD_w%d_o%d.mat',Nfft,Olap);
+if ~isfile(outfile)
+    disp(['Calculating Shifted SPOD with window = ', num2str(Nfft), ' and overlap = ', num2str(Olap), '%'])
+    [Psi, Lambda, Qhat, St, Nb] = shifted_spod(Q,W,x,xp,U,dt,Nfft,Olap);
+    save(outfile,'Psi','Lambda','Qhat','St','x','t','Nb','Nfft','Olap','-v7.3');
+end
 
 %% PLot mode
-[~,idx_omega] = min(abs(2*pi*St-omega2plot));
-plot_SPOD_Modes(outfile,mode2plot,idx_omega)
+plot_SPOD_Modes(outfile,mode2plot,omega2plot)
