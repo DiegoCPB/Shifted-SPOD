@@ -54,6 +54,7 @@ Q = Q(:,Nbegin+1:end-Nend);
 Nb = calcNb(Nt,nfft,olap);
 fs = 1/dt; % sampling frequency
 
+% Frequency vector of two-sided spectrum
 St = (fs/nfft)*(0:(nfft-1));
 St(St >= fs/2) = St(St >= fs/2) - fs;% two sided spectrum
 NSt = length(St);   
@@ -62,8 +63,7 @@ Qhat = zeros(NSt,N,Nb);
 
 % Windowing
 w = inf_smooth(nfft);
-wrms = rms(w);
-ECF = 1/wrms; % Window energy correction factor
+ECF = 1/rms(w); % Window energy correction factor
 Ww = repmat(w,[N 1]);
 
 for i = 1:Nb

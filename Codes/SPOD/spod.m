@@ -37,16 +37,16 @@ function [Psi, Lambda, Qhat, St, Nb] = spod(Q,W,dt,nfft,olap)
 Nb = calcNb(Nt,nfft,olap);
 fs = 1/dt; % sampling frequency
 
+% Frequency vector of two-sided spectrum
 St = (fs/nfft)*(0:(nfft-1));
-St(St >= fs/2) = St(St >= fs/2) - fs; % two sided spectrum
-NSt = length(St);   
+St(St >= fs/2) = St(St >= fs/2) - fs;
+NSt = length(St); 
 
 Qhat = zeros(NSt,N,Nb);
 
 % Windowing
 w = inf_smooth(nfft);
-wrms = rms(w);
-ECF = 1/wrms; % Window energy correction factor
+ECF = 1/rms(w); % Window energy correction factor
 Ww = repmat(w,[N 1]);
 
 for i = 1:Nb
@@ -67,7 +67,7 @@ for j=1:NSt
     
     % Direct POD
     if Nm == N
-        C = Qhat_aux*Qhat_aux'*(W/Nb); 
+        C = Qhat_aux*Qhat_aux'*W/Nb; 
         [Psi_aux,lambda] = eig(C);
         [lambda,ind_sort] = sort(diag(lambda),'descend');
         Psi_aux = Psi_aux(:,ind_sort); 
@@ -75,7 +75,7 @@ for j=1:NSt
         
     % Snapshot POD
     elseif Nm == Nb
-        C = Qhat_aux'*(W/Nb)*Qhat_aux;
+        C = Qhat_aux'*W*Qhat_aux/Nb;
         [Theta_aux,lambda] = eig(C);
         [lambda,ind_sort] = sort(diag(lambda),'descend');
         Theta_aux = Theta_aux(:,ind_sort); 

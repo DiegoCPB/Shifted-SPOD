@@ -10,7 +10,7 @@ function [U,S,V,x] = GL_solveResolvent(LinearMatrixPath,omega)
     W = diag(W);
 
     % Resolvent operator
-    R = -inv(1i*omega*II - L);
+    R = inv(-1i*omega*II + L);
 
     % optimal forcing according to Rayleigh quotient:
     % max <Rf,Rf>/<f,f>
