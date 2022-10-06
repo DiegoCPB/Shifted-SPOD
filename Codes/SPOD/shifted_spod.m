@@ -28,7 +28,7 @@ function [Psi, Lambda, Qhat, St, Nb] = shifted_spod(Q,W,x,xp,u,dt,nfft,olap)
 
 %========================================================
 % Authors : Diego C. P. Blanco 
-% Last version : 08/04/2022
+% Last version : 06/10/2022
 %========================================================
 
 % Temporal shift
@@ -64,13 +64,12 @@ Qhat = zeros(NSt,N,Nb);
 % Windowing
 w = inf_smooth(nfft);
 ECF = 1/rms(w); % Window energy correction factor
-Ww = repmat(w,[N 1]);
 
 for i = 1:Nb
     pos1 = calcPos1(olap,nfft,i);   
     pos2 = pos1+nfft-1;
     % -1i*omega*t convention
-    Qfft = ECF*ifft(Q(:,pos1:pos2).*Ww,[],2);
+    Qfft = ECF*ifft(w.*Q(:,pos1:pos2),[],2);
     Qhat(:,:,i) = Qfft.';
 end
 
@@ -84,8 +83,8 @@ for j=1:NSt
     
     if St(j) ~= 0 % Shift correction
         % -1i*omega*t convention
-        Phase = spdiags(exp(-2i*pi*St(j)*Shift*dt),0,N,N);
-        Qhat_aux = Phase*Qhat_aux;
+        phase = exp(-2i*pi*St(j)*Shift*dt);
+        Qhat_aux = phase.*Qhat_aux;
     end
     
     % Direct POD
