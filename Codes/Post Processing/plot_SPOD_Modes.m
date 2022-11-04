@@ -4,7 +4,7 @@ function plot_SPOD_Modes(SPOD_path,index_mode,omega)
     St = data.St;
     [~,index_omega] = min(abs(2*pi*St-omega));
 
-    mode = data.Psi(index_omega,:,index_mode)';
+    mode = data.Psi(index_omega,:,index_mode).';
     omega = St;
     omega = 2*pi*omega(index_omega);
     
