@@ -1,6 +1,7 @@
 # Shifted-SPOD
 
 This repository contains the scripts necessary to calculate solutions of the complex Ginzburg-Landau equation and perform analysis using the SPOD and shifted SPOD algorithms.
+Reference: doi:10.1017/jfm.2022.790
 
 Requirements:
 - MATLAB with Signal Processing Toolbox because of fir2 function. This function can be commented out, if necessary.
